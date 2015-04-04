@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import controller.Controller;
 import util.PropertyManager;
 
 
@@ -23,15 +24,11 @@ public class GameFrame extends Frame{
 	public int FRAME_WIDTH = Integer.parseInt(PropertyManager.prop.getProperty("initFRAME_WIDTH")) * CELL;
 	public int FRAME_HEIGHT = Integer.parseInt(PropertyManager.prop.getProperty("initFRAME_HEIGHT")) * CELL;
 	public Image offScreenImage = null;
-	public SnakeGame sg;
-	public Snake sna;
-	public Egg egg;
+	public Controller ctr;
 	
-	public GameFrame(SnakeGame sg, Snake sna, Egg egg){
+	public GameFrame(Controller ctr){
 		super("SnakeGame");
-		this.sg = sg;
-		this.sna = sna;;
-		this.egg = egg;
+		this.ctr = ctr;
 	}
 	
 	public void launchFrame() {
@@ -54,19 +51,19 @@ public class GameFrame extends Frame{
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			sna.keyPressed(e);
+			ctr.sna.keyPressed(e);
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			sna.keyReleased(e);
+			ctr.sna.keyReleased(e);
 		}
 		
 	}
 	
 	public void paint(Graphics g) {
-		egg.drawMe(g);
-		sna.drawMe(g);
+		ctr.eg.drawMe(g);
+		ctr.sna.drawMe(g);
 	}
 	
 	@Override
@@ -80,7 +77,7 @@ public class GameFrame extends Frame{
 		goff.fill3DRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT, true);
 		goff.setColor(c);
 		paint(goff);
-		g.drawImage(offScreenImage, frame_x, frame_y, null);
+		g.drawImage(offScreenImage,0,0, null);
 	}
 
 	public class DrawThread implements Runnable {
@@ -90,11 +87,12 @@ public class GameFrame extends Frame{
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				repaint();
 			}
 		}
 	}
+	
+	
 }

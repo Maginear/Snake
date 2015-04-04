@@ -2,36 +2,45 @@ package entity;
 
 import gameMenu.SnakeGame;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.Random;
 
+import util.GameListener;
 import util.PropertyManager;
+import controller.Controller;
 
-public class Egg {
+public class Egg extends Point{
 	public int CELL = Integer.parseInt(PropertyManager.getProperty("initCELL"));
-	public int egg_x = Integer.parseInt(PropertyManager.getProperty("initEgg_x")) * CELL;
-	public int egg_y = Integer.parseInt(PropertyManager.getProperty("initEgg_y")) * CELL;
 	public int EGG_WIDTH = Integer.parseInt(PropertyManager.getProperty("initEgg_WIDTH")) * CELL;
 	public int EGG_HEIGHT = Integer.parseInt(PropertyManager.getProperty("initEgg_HEIGHT")) * CELL;
+	public GameListener gl;	
 	public boolean eggLife;
 	public SnakeGame sg;
-	public Random r = new Random();
+	public Snake sna;
 
-	public Egg(SnakeGame sg){
+	public Egg(int egg_x, int egg_y) {
+		this.x = egg_x;
+		this.y = egg_y;
 		eggLife = true;
-		this.sg = sg;
 	}
 	
-	public Egg(int egg_x, int egg_y) {
-		this.egg_x = egg_x;
-		this.egg_y = egg_y;
-		eggLife = true;
-	}
-
-	public Egg getNewEgg(){
-		Egg eg = new Egg(r.nextInt(40),r.nextInt(30));
-		
-		if(eg)
+    
+	public static Egg getNewEgg(){
+		Random r = new Random();
+		boolean Eggcover;
+		Egg eg;
+		do {
+			eg = new Egg(r.nextInt(40), r.nextInt(30));
+			Eggcover = false;
+			for (Point poi :Snake.snakeBody) {
+				if (poi.equals(eg)) {
+					Eggcover = true;
+					break;
+				}
+			}
+		} while (Eggcover);
 		return eg;
 	}
 	
@@ -44,7 +53,14 @@ public class Egg {
 	}
 	
 	public void drawMe(Graphics g){
-		
+		Color c = g.getColor();
+		g.setColor(Color.RED);
+		g.fillRect(this.x * CELL, this.y * CELL, CELL, CELL);
+		g.setColor(c);
+	}
+	
+	public void addEggListner(GameListener gl){
+		this.gl = gl;
 	}
 	
 }
